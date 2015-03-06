@@ -51,17 +51,26 @@ void mousePressed() {
 
 
 class Boat { 
-  double puissance=1,x=0,v=0,Te=0.04,fuel=100; 
+  double puissance=1,x=0,v=0,Te=0.04;
   int h=0, hmax = 3 , hmin = -3;
-  float ar=map(h, 0, hmax, 0, TWO_PI*(3/4)) - HALF_PI;;
+  float ar=map(h, 0, hmax, 0, TWO_PI*(3/4)) - HALF_PI;
+  
+  float fuel=100;
+  float es;
+  
   PImage chal=loadImage("chalutier.png");
-  PImage tele=loadImage("telegraph.jpg");
+  PImage tele=loadImage("telegraph.png");
+  PImage ess=loadImage("essence.png");
   
   void move() {
+    if(fuel > 0)
+    {
     v+= 0.04*h*puissance;
     x+= Te*v;
-    fuel -= abs(h)*Te*0.01;
+    fuel -= abs(h)*Te;
+    es = map(fuel, 0.0, 100.0, -HALF_PI/3, HALF_PI/3) - HALF_PI-0.15 ;   
     println(fuel);
+    }
 
   }
   void display() {
@@ -70,10 +79,20 @@ class Boat {
     
     tele.resize(120,0);
     image(tele,width-120,0);
+    
+    ess.resize(120,0);
+    image(ess,width-120-120,0);
     int cx = width-60;
     int cy = 60;
+    int cex = width-60-120;
+    int cey = 60;
     int radius = 42;
+    int radius2 = 25;
+    strokeWeight(4);
     arrow(cx,cy,(int)(cx+cos(ar)*radius),(int)(cy+sin(ar)*radius));
+    strokeWeight(2);
+    line(cex,cey,(int)(cex+cos(es)*radius2),(int)(cey+sin(es)*radius2));
+    strokeWeight(1);
   }
   
   void machinesAvant()
@@ -84,6 +103,7 @@ class Boat {
      }
      //Modifier le facteur si on modifie le hmax
      ar = map(-h, 0, hmax*3, 0, TWO_PI) - HALF_PI;
+     
   }
   void machinesArrieres()
   {
@@ -92,6 +112,7 @@ class Boat {
      h--;
      //Modifier le facteur si on modifie le hmax
      ar = map(-h, 0, hmax*3, 0, TWO_PI) - HALF_PI;
+     
      }
   }
   
@@ -99,7 +120,7 @@ class Boat {
   
   
   void arrow(int x1, int y1, int x2, int y2) {
-    strokeWeight(4);
+    
     line(x1, y1, x2, y2);
     pushMatrix();
     translate(x2, y2);
