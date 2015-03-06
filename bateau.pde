@@ -53,7 +53,7 @@ void mousePressed() {
 class Boat { 
   double puissance=1,x=0,v=0,Te=0.04,fuel=100; 
   int h=0, hmax = 3 , hmin = -3;
-  float ar=map(h, 0, hmax*4, 0, TWO_PI) - HALF_PI;;
+  float ar=map(h, 0, hmax, 0, TWO_PI*(3/4)) - HALF_PI;;
   PImage chal=loadImage("chalutier.png");
   PImage tele=loadImage("telegraph.jpg");
   
