@@ -70,10 +70,9 @@ void mousePressed() {
 
 
 class Boat { 
-  double puissance=44200,x=0,v=0,Te=0.04,fuel=100,masse=24190,k=1000,longueur=35,cf=1000; 
+  double puissance=44200,x=0,v=0,Te=0.04,fuel=100,masse=24190,k=1000,longueur=2000,cf=500; 
   int h=0, hmax = 3 , hmin = -3;
   float ar=map(h, 0, hmax, 0, TWO_PI*(3/4)) - HALF_PI;
-  double frott=0;
   float es;
   
   PImage chal=loadImage("chalutier.png");
@@ -82,16 +81,23 @@ class Boat {
   PFont params = createFont("Arial",16,true); 
   
   void move() {
+    
     if(fuel > 0)
     {
+      
+      double frott = 500*v*v;
+      if(v < 0)
+      {
+        frott = -frott;
+      }
+      v= v*0.9991736+0.073*h*puissance;
+      x+= 0.039*v+0.0014*h*puissance;    
+      
+      println(frott);
     
-   frott = cf*v;
-    v+= (Te/masse)*(h*puissance-frott);
-    
-    
-    x+= Te*v;
-    fuel -= abs(h)*Te*0.1;
-    es = map((int)fuel, 0.0, 100.0, -HALF_PI/3, HALF_PI/3) - HALF_PI-0.15 ;   
+      x+= Te*v;
+      fuel -= abs(h)*Te*0.1;
+      es = map((int)fuel, 0.0, 100.0, -HALF_PI/3, HALF_PI/3) - HALF_PI-0.15 ;   
     
     }
 
@@ -100,7 +106,6 @@ class Boat {
     
     chal.resize(100,0);
     image(chal,(int)x,145);
-    println(v);
     tele.resize(120,0);
     image(tele,width-120,0);
     
