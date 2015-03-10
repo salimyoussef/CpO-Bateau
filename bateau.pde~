@@ -26,21 +26,9 @@ void draw() {
   image(pause_button,30,height-30);
   
   b.move();
-  if(isEndOfTheGame()) victory();
   b.display();
   f.move();
-  if(isEndOfTheGame()) victory();
   f.display();
-  
-}
-
-boolean isEndOfTheGame(){
- //return dist((int)b.x+15,260,f.real_x,f.real_y) < 30 | dist((int)b.x+7,277,f.real_x,f.real_y) < 15;
- //Voir les points de contact...
-}
-
-void victory(){
-  setup();
 }
 
 void keyPressed() {
@@ -81,20 +69,23 @@ class Boat {
   PImage tele=loadImage("telegraph.png");
   PImage ess=loadImage("essence.png");
   
-  
   void move() {
     if(fuel > 0)
     {
     v+= 0.04*h*puissance;
     x+= Te*v;
+<<<<<<< HEAD
+    fuel -= abs(h)*Te*0.01;
+    //println(fuel);
+=======
     fuel -= abs(h)*Te;
     es = map(fuel, 0.0, 100.0, -HALF_PI/3, HALF_PI/3) - HALF_PI-0.15 ;   
     println(fuel);
     }
+>>>>>>> b4967eb1b4df011a970c447f7523bcb9353d1c45
 
   }
   void display() {
-    
     chal.resize(100,0);
     image(chal,(int)x,145);
     
@@ -114,12 +105,6 @@ class Boat {
     strokeWeight(2);
     line(cex,cey,(int)(cex+cos(es)*radius2),(int)(cey+sin(es)*radius2));
     strokeWeight(1);
-    
-    //Points de contact
-    ellipse((int)x+11,250,15,15);
-    ellipse((int)x+7,277,15,15);
-    ellipse((int)x+13,265,20,20);
-    ellipse((int)x+25,257,15,15);
   }
   
   void machinesAvant()
@@ -166,20 +151,13 @@ class Fish{
   PImage fish=loadImage("fish.png");
   float m = 0.0;
   float t = 0.0;
-  int x, y;
-  int real_x, real_y;
   void move() {
-    m += 0.01;
-    t +=0.003;
-    x = (int)(400+250*sin(t));
-    y = (int)(280+40*sin(m));
-    real_x = x+10;
-    real_y = y+10;
+    m += 0.1;
+    t +=0.005;
   }
   void display() {
      fish.resize(20,0);
-     image(fish,x,y);
-     //ellipse(real_x,real_y,5,5);
+     image(fish,250*(1+sin(t)),280+30*sin(m));
   }
 }
 
