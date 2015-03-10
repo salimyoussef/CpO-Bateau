@@ -35,7 +35,7 @@ void draw() {
 }
 
 boolean isEndOfTheGame(){
- //return dist((int)b.x+15,260,f.real_x,f.real_y) < 30 | dist((int)b.x+7,277,f.real_x,f.real_y) < 15;
+ return dist((int)b.x+15,260,f.real_x,f.real_y) < 30 | dist((int)b.x+7,277,f.real_x,f.real_y) < 15;
  //Voir les points de contact...
 }
 
@@ -70,26 +70,29 @@ void mousePressed() {
 
 
 class Boat { 
-  double puissance=1,x=0,v=0,Te=0.04;
+  double puissance=44200,x=0,v=0,Te=0.04,fuel=100,masse=24190,k=1000,longueur=35,cf=1000; 
   int h=0, hmax = 3 , hmin = -3;
   float ar=map(h, 0, hmax, 0, TWO_PI*(3/4)) - HALF_PI;
-  
-  float fuel=100;
+  double frott=0;
   float es;
   
   PImage chal=loadImage("chalutier.png");
   PImage tele=loadImage("telegraph.png");
   PImage ess=loadImage("essence.png");
-  
+  PFont params = createFont("Arial",16,true); 
   
   void move() {
     if(fuel > 0)
     {
-    v+= 0.04*h*puissance;
+    
+   frott = cf*v;
+    v+= (Te/masse)*(h*puissance-frott);
+    
+    
     x+= Te*v;
-    fuel -= abs(h)*Te;
-    es = map(fuel, 0.0, 100.0, -HALF_PI/3, HALF_PI/3) - HALF_PI-0.15 ;   
-    println(fuel);
+    fuel -= abs(h)*Te*0.1;
+    es = map((int)fuel, 0.0, 100.0, -HALF_PI/3, HALF_PI/3) - HALF_PI-0.15 ;   
+    
     }
 
   }
@@ -97,7 +100,7 @@ class Boat {
     
     chal.resize(100,0);
     image(chal,(int)x,145);
-    
+    println(v);
     tele.resize(120,0);
     image(tele,width-120,0);
     
@@ -115,11 +118,16 @@ class Boat {
     line(cex,cey,(int)(cex+cos(es)*radius2),(int)(cey+sin(es)*radius2));
     strokeWeight(1);
     
+    textFont(params,16);
+    fill(0);  
+    text("v="+(int)v+" m/s x="+(int)x,width/2,30);
     //Points de contact
-    ellipse((int)x+11,250,15,15);
-    ellipse((int)x+7,277,15,15);
-    ellipse((int)x+13,265,20,20);
-    ellipse((int)x+25,257,15,15);
+    //ellipse((int)x+11,250,15,15);
+    //ellipse((int)x+7,277,15,15);
+    //ellipse((int)x+13,265,20,20);
+    //ellipse((int)x+25,257,15,15);
+    
+    
   }
   
   void machinesAvant()
