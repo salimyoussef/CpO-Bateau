@@ -27,8 +27,30 @@ void draw() {
   
   b.move();
   b.display();
+  theEndOrNotTheEnd();
   f.move();
   f.display();
+  theEndOrNotTheEnd();
+}
+
+<<<<<<< HEAD
+void theEndOrNotTheEnd(){
+  float dist = dist((int)b.x+11,250,f.real_x,f.real_y);
+  if(dist <= 25){ //Fin possible
+    if(dist < 20)
+        victory(10);
+    else if(dist((int)b.x+7,277,f.real_x,f.real_y) < 15||
+            dist((int)b.x+13,265,f.real_x,f.real_y) < 15 ||
+            dist((int)b.x+25,257,f.real_x,f.real_y) < 15)
+        victory(5);
+  }
+}
+
+void victory(int score){
+  f.caught_by_the_net();
+  int l = 200;
+  fill(255);
+  rect(width/2 - l,height/2 - l,l*2,l*2);
 }
 
 void keyPressed() {
@@ -58,37 +80,42 @@ void mousePressed() {
 
 
 class Boat { 
-  double puissance=1,x=0,v=0,Te=0.04;
+  double puissance=44200,x=0,v=0,Te=0.04,fuel=100,masse=24190,k=1000,longueur=2000,cf=500; 
   int h=0, hmax = 3 , hmin = -3;
   float ar=map(h, 0, hmax, 0, TWO_PI*(3/4)) - HALF_PI;
-  
-  float fuel=100;
   float es;
   
   PImage chal=loadImage("chalutier.png");
   PImage tele=loadImage("telegraph.png");
   PImage ess=loadImage("essence.png");
+  PFont params = createFont("Arial",16,true); 
   
   void move() {
+    
     if(fuel > 0)
     {
-    v+= 0.04*h*puissance;
-    x+= Te*v;
-<<<<<<< HEAD
-    fuel -= abs(h)*Te*0.01;
-    //println(fuel);
-=======
-    fuel -= abs(h)*Te;
-    es = map(fuel, 0.0, 100.0, -HALF_PI/3, HALF_PI/3) - HALF_PI-0.15 ;   
-    println(fuel);
+      
+      double frott = 500*v*v;
+      if(v < 0)
+      {
+        frott = -frott;
+      }
+      v= v*0.9991736+0.073*h*puissance;
+      x+= 0.039*v+0.0014*h*puissance;    
+      
+      println(frott);
+    
+      x+= Te*v;
+      fuel -= abs(h)*Te*0.1;
+      es = map((int)fuel, 0.0, 100.0, -HALF_PI/3, HALF_PI/3) - HALF_PI-0.15 ;   
+    
     }
->>>>>>> b4967eb1b4df011a970c447f7523bcb9353d1c45
 
   }
   void display() {
+    
     chal.resize(100,0);
     image(chal,(int)x,145);
-    
     tele.resize(120,0);
     image(tele,width-120,0);
     
@@ -105,6 +132,20 @@ class Boat {
     strokeWeight(2);
     line(cex,cey,(int)(cex+cos(es)*radius2),(int)(cey+sin(es)*radius2));
     strokeWeight(1);
+    
+    textFont(params,16);
+    fill(0);  
+    text("v="+(int)v+" m/s x="+(int)x,width/2,30);
+    //Points de contact
+    //ellipse((int)x+11,250,15,15);
+    //ellipse((int)x+7,277,15,15);
+    //ellipse((int)x+13,265,20,20);
+    //ellipse((int)x+25,257,15,15);
+<<<<<<< HEAD
+=======
+    
+    
+>>>>>>> 091cac292ee0e008f53051a9f1493c3ca5d52b4c
   }
   
   void machinesAvant()
@@ -151,13 +192,31 @@ class Fish{
   PImage fish=loadImage("fish.png");
   float m = 0.0;
   float t = 0.0;
+  int x, y;
+  int real_x, real_y;
+  boolean in_the_net = false;
+  
   void move() {
-    m += 0.1;
-    t +=0.005;
+    m += 0.01;
+    t +=0.003;
+    if(!in_the_net){
+      x = (int)(400+250*sin(t));
+      y = (int)(280+40*sin(m)); 
+    }
+    else{
+       x = ((int)b.x+10);
+       y = 255;
+    }
+    real_x = x+10;
+    real_y = y+10;
   }
   void display() {
      fish.resize(20,0);
-     image(fish,250*(1+sin(t)),280+30*sin(m));
+     image(fish,x,y);
+  }
+  
+  void caught_by_the_net(){
+    in_the_net = true;
   }
 }
 
