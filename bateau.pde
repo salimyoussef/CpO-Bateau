@@ -1,10 +1,13 @@
 Boat b;
 Fish f;
+boolean still_not_finished;
+int score;
 
 void setup() {
   size(768, 450);
   b = new Boat();
   f = new Fish();
+  still_not_finished = true;
 }
 
 void draw() {
@@ -24,32 +27,44 @@ void draw() {
   PImage pause_button = loadImage("pause_button.jpeg");
   pause_button.resize(30,30);
   image(pause_button,30,height-30);
-  
   b.move();
   b.display();
-  theEndOrNotTheEnd();
+  if(still_not_finished) theEndOrNotTheEnd();
+  else victory(score);
   f.move();
   f.display();
-  theEndOrNotTheEnd();
+  if(still_not_finished) theEndOrNotTheEnd();
+  else victory(score);
 }
 
 void theEndOrNotTheEnd(){
   float dist = dist((int)b.x+11,250,f.real_x,f.real_y);
   if(dist <= 25){ //Fin possible
-    if(dist < 20)
+    if(dist < 20){
         victory(10);
+        score = 10;
+    }
     else if(dist((int)b.x+7,277,f.real_x,f.real_y) < 15||
             dist((int)b.x+13,265,f.real_x,f.real_y) < 15 ||
-            dist((int)b.x+25,257,f.real_x,f.real_y) < 15)
+            dist((int)b.x+25,257,f.real_x,f.real_y) < 15){
         victory(5);
+        score = 5;
+            }
   }
 }
 
 void victory(int score){
+  still_not_finished = false;
   f.caught_by_the_net();
-  int l = 200;
+  int l = 150;
   fill(255);
-  rect(width/2 - l,height/2 - l,l*2,l*2);
+  rect(width/2 - l,height/2 - l/2,l*2,l);
+  fill(0);
+  textAlign(CENTER);
+  if(score==10)
+    text("Victoire ! Très bonne précision :\n 10 points",width/2,height/2);
+  else
+    text("Victoire ! Précision perfectible :\n 5 points",width/2,height/2);
 }
 
 void keyPressed() {
@@ -87,27 +102,19 @@ class Boat {
   PImage chal=loadImage("chalutier.png");
   PImage tele=loadImage("telegraph.png");
   PImage ess=loadImage("essence.png");
-  PFont params = createFont("Arial",16,true); 
+  PFont params = createFont("Arial",16,true);
+  double frott = 0;
   
   void move() {
     
     if(fuel > 0)
     {
       
-      double frott = 500*v*v;
-      if(v < 0)
-      {
-        frott = -frott;
-      }
-      v= v*0.9991736+0.073*h*puissance;
-      x+= 0.039*v+0.0014*h*puissance;    
-      
-      println(frott);
-    
+      frott = cf*v;
+      v+= (Te/masse)*(h*puissance-frott);
       x+= Te*v;
       fuel -= abs(h)*Te*0.1;
-      es = map((int)fuel, 0.0, 100.0, -HALF_PI/3, HALF_PI/3) - HALF_PI-0.15 ;   
-    
+      es = map((int)fuel, 0.0, 100.0, -HALF_PI/3, HALF_PI/3) - HALF_PI-0.15 ; 
     }
 
   }
@@ -140,11 +147,6 @@ class Boat {
     //ellipse((int)x+7,277,15,15);
     //ellipse((int)x+13,265,20,20);
     //ellipse((int)x+25,257,15,15);
-<<<<<<< HEAD
-=======
-    
-    
->>>>>>> 091cac292ee0e008f53051a9f1493c3ca5d52b4c
   }
   
   void machinesAvant()
