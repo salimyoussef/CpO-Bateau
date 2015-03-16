@@ -94,7 +94,7 @@ void mousePressed() {
 
 
 class Boat { 
-  double puissance=44200,x=0,v=0,Te=0.04,fuel=100,masse=24190,k=1000,longueur=2000,cf=500; 
+  double x=0,v=0,Te=0.04,fuel=100; 
   int h=0, hmax = 3 , hmin = -3;
   float ar=map(h, 0, hmax, 0, TWO_PI*(3/4)) - HALF_PI;
   float es;
@@ -109,10 +109,9 @@ class Boat {
     
     if(fuel > 0)
     {
-      
-      frott = cf*v;
-      v+= (Te/masse)*(h*puissance-frott);
-      x+= Te*v;
+      v= v*0.981736+0.073*h;
+      x+= 0.039*v+0.0014*h;    
+
       fuel -= abs(h)*Te*0.1;
       es = map((int)fuel, 0.0, 100.0, -HALF_PI/3, HALF_PI/3) - HALF_PI-0.15 ; 
     }
