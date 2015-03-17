@@ -1,10 +1,13 @@
 Boat b;
 Fish f;
+boolean still_not_finished;
+int score;
 
 void setup() {
   size(768, 450);
   b = new Boat();
   f = new Fish();
+  still_not_finished = true;
 }
 
 void draw() {
@@ -24,23 +27,44 @@ void draw() {
   PImage pause_button = loadImage("pause_button.jpeg");
   pause_button.resize(30,30);
   image(pause_button,30,height-30);
-  
   b.move();
-  if(isEndOfTheGame()) victory();
   b.display();
+  if(still_not_finished) theEndOrNotTheEnd();
+  else victory(score);
   f.move();
-  if(isEndOfTheGame()) victory();
   f.display();
-  
+  if(still_not_finished) theEndOrNotTheEnd();
+  else victory(score);
 }
 
-boolean isEndOfTheGame(){
- return dist((int)b.x+15,260,f.real_x,f.real_y) < 30 | dist((int)b.x+7,277,f.real_x,f.real_y) < 15;
- //Voir les points de contact...
+void theEndOrNotTheEnd(){
+  float dist = dist((int)b.x+11,250,f.real_x,f.real_y);
+  if(dist <= 25){ //Fin possible
+    if(dist < 20){
+        victory(10);
+        score = 10;
+    }
+    else if(dist((int)b.x+7,277,f.real_x,f.real_y) < 15||
+            dist((int)b.x+13,265,f.real_x,f.real_y) < 15 ||
+            dist((int)b.x+25,257,f.real_x,f.real_y) < 15){
+        victory(5);
+        score = 5;
+            }
+  }
 }
 
-void victory(){
-  setup();
+void victory(int score){
+  still_not_finished = false;
+  f.caught_by_the_net();
+  int l = 150;
+  fill(255);
+  rect(width/2 - l,height/2 - l/2,l*2,l);
+  fill(0);
+  textAlign(CENTER);
+  if(score==10)
+    text("Victoire ! Très bonne précision :\n 10 points",width/2,height/2);
+  else
+    text("Victoire ! Précision perfectible :\n 5 points",width/2,height/2);
 }
 
 void keyPressed() {
@@ -78,7 +102,8 @@ class Boat {
   PImage chal=loadImage("chalutier.png");
   PImage tele=loadImage("telegraph.png");
   PImage ess=loadImage("essence.png");
-  PFont params = createFont("Arial",16,true); 
+  PFont params = createFont("Arial",16,true);
+  double frott = 0;
   
   void move() {
     
@@ -88,8 +113,7 @@ class Boat {
       x+= 0.0399339*v+0.0004867*h;    
 
       fuel -= abs(h)*Te*0.1;
-      es = map((int)fuel, 0.0, 100.0, -HALF_PI/3, HALF_PI/3) - HALF_PI-0.15 ;   
-    
+      es = map((int)fuel, 0.0, 100.0, -HALF_PI/3, HALF_PI/3) - HALF_PI-0.15 ; 
     }
 
   }
@@ -122,8 +146,6 @@ class Boat {
     //ellipse((int)x+7,277,15,15);
     //ellipse((int)x+13,265,20,20);
     //ellipse((int)x+25,257,15,15);
-    
-    
   }
   
   void machinesAvant()
@@ -172,18 +194,29 @@ class Fish{
   float t = 0.0;
   int x, y;
   int real_x, real_y;
+  boolean in_the_net = false;
+  
   void move() {
     m += 0.01;
     t +=0.003;
-    x = (int)(400+250*sin(t));
-    y = (int)(280+40*sin(m));
+    if(!in_the_net){
+      x = (int)(400+250*sin(t));
+      y = (int)(280+40*sin(m)); 
+    }
+    else{
+       x = ((int)b.x+10);
+       y = 255;
+    }
     real_x = x+10;
     real_y = y+10;
   }
   void display() {
      fish.resize(20,0);
      image(fish,x,y);
-     //ellipse(real_x,real_y,5,5);
+  }
+  
+  void caught_by_the_net(){
+    in_the_net = true;
   }
 }
 
