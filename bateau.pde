@@ -95,15 +95,31 @@ void mousePressed() {
 
 class Boat { 
   double x=0,v=0,Te=0.04,fuel=100; 
-  int h=0, hmax = 3 , hmin = -3;
+  float h=0, hmax = 3 , hmin = -3;
   float ar=map(h, 0, hmax, 0, TWO_PI*(3/4)) - HALF_PI;
   float es;
-  
+  String line;
+
+  BufferedReader reader=createReader("com.txt"); 
+
+  int i = 0;
   PImage chal=loadImage("chalutier.png");
   PImage tele=loadImage("telegraph.png");
   PImage ess=loadImage("essence.png");
-  PFont params = createFont("Arial",16,true);
-  double frott = 0;
+  PFont params = createFont("Arial",16,true); 
+  String[] splitted;
+  
+  Boat(){
+    try
+    {
+      line = reader.readLine();
+    }
+    catch(IOException e)
+    {
+      print("non");
+    }
+    splitted = split(line,',');
+  }
   
   void move() {
     
@@ -116,8 +132,8 @@ class Boat {
       es = map((int)fuel, 0.0, 100.0, -HALF_PI/3, HALF_PI/3) - HALF_PI-0.15 ;   
     
     }
-    
-    if(true)
+    boolean boucleouverte = true;
+    if(boucleouverte)
     {
       
       if(i < splitted.length)
