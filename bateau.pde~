@@ -1,10 +1,13 @@
 Boat b;
 Fish f;
+boolean still_not_finished;
+int score;
 
 void setup() {
   size(768, 450);
   b = new Boat();
   f = new Fish();
+  still_not_finished = true;
 }
 
 void draw() {
@@ -25,32 +28,49 @@ void draw() {
   pause_button.resize(30,30);
   image(pause_button,30,height-30);
   
+  //Bouton retour d'état
+  PImage closed_loop_button = loadImage("manuel.png");
+  closed_loop_button.resize(30,30);
+  image(closed_loop_button,60,height-30);
+  
   b.move();
   b.display();
-  theEndOrNotTheEnd();
+  if(still_not_finished) theEndOrNotTheEnd();
+  else victory(score);
   f.move();
   f.display();
-  theEndOrNotTheEnd();
+  if(still_not_finished) theEndOrNotTheEnd();
+  else victory(score);
 }
 
-<<<<<<< HEAD
 void theEndOrNotTheEnd(){
   float dist = dist((int)b.x+11,250,f.real_x,f.real_y);
   if(dist <= 25){ //Fin possible
-    if(dist < 20)
+    if(dist < 20){
         victory(10);
+        score = 10;
+    }
     else if(dist((int)b.x+7,277,f.real_x,f.real_y) < 15||
             dist((int)b.x+13,265,f.real_x,f.real_y) < 15 ||
-            dist((int)b.x+25,257,f.real_x,f.real_y) < 15)
+            dist((int)b.x+25,257,f.real_x,f.real_y) < 15){
         victory(5);
+        score = 5;
+            }
   }
 }
 
 void victory(int score){
+  still_not_finished = false;
   f.caught_by_the_net();
-  int l = 200;
+  int l = 150;
   fill(255);
-  rect(width/2 - l,height/2 - l,l*2,l*2);
+  rect(width/2 - l,height/2 - l/2,l*2,l);
+  fill(0);
+  textAlign(CENTER);
+  if(score==10)
+    text("Victoire ! Très bonne précision :\n 10 points",width/2,height/2);
+  else
+    text("Victoire ! Précision perfectible :\n 5 points",width/2,height/2);
 }
 
 void keyPressed() {
@@ -70,48 +90,95 @@ boolean overRect(int x, int y, int width, int height)  {
 }
 
 void mousePressed() {
-  if (overRect(0, height-30, width, 30)) {
+  if (overRect(0, height-30, 30, 30)) {
     setup();
   }
-  else if(overRect(0, height-(30*2), width, 30*2)){
+  else if(overRect(30, height-30, 30, 30)){
     //while(pause==true);
+  }
+  else if(overRect(60, height-30, 30, 30)){
+    setup();
+    b.retour_etat = true;
   }
 }
 
 
 class Boat { 
-  double puissance=44200,x=0,v=0,Te=0.04,fuel=100,masse=24190,k=1000,longueur=2000,cf=500; 
-  int h=0, hmax = 3 , hmin = -3;
+  double x=0,v=0,Te=0.04,fuel=100; 
+  float h=0, hmax = 3 , hmin = -3;
   float ar=map(h, 0, hmax, 0, TWO_PI*(3/4)) - HALF_PI;
   float es;
+<<<<<<< HEAD
+  float k = 0.05;
+  float c = 150;
+  boolean retour_etat = false;
   
   PImage chal=loadImage("chalutier.png");
   PImage tele=loadImage("telegraph.png");
   PImage ess=loadImage("essence.png");
+  PImage indication=loadImage("ici.png");
+  PFont params = createFont("Arial",16,true);
+  double frott = 0;
+=======
+  String line;
+
+  BufferedReader reader=createReader("com.txt"); 
+
+  int i = 0;
+  PImage chal=loadImage("chalutier.png");
+  PImage tele=loadImage("telegraph.png");
+  PImage ess=loadImage("essence.png");
   PFont params = createFont("Arial",16,true); 
+  String[] splitted;
+  
+  Boat(){
+    try
+    {
+      line = reader.readLine();
+    }
+    catch(IOException e)
+    {
+      print("non");
+    }
+    splitted = split(line,',');
+  }
+>>>>>>> 5e98a49973d000673c7509d61d4c1feb4eb4945c
   
   void move() {
     
     if(fuel > 0)
     {
-      
-      double frott = 500*v*v;
-      if(v < 0)
-      {
-        frott = -frott;
-      }
-      v= v*0.9991736+0.073*h*puissance;
-      x+= 0.039*v+0.0014*h*puissance;    
-      
-      println(frott);
-    
-      x+= Te*v;
+      v= v* 0.9966983+0.0243224*h;
+      x+= 0.0399339*v+0.0004867*h;    
+
       fuel -= abs(h)*Te*0.1;
       es = map((int)fuel, 0.0, 100.0, -HALF_PI/3, HALF_PI/3) - HALF_PI-0.15 ;   
     
     }
+    boolean boucleouverte = true;
+    if(boucleouverte)
+    {
+      
+      if(i < splitted.length)
+      {
+        h=Float.parseFloat(splitted[i]);
+        println(h);
+        i++;
+      }
+      else
+      {
+        h=0;
+      }
+      ar = map(-h, 0, hmax*3, 0, TWO_PI) - HALF_PI;
+      
+    }
+    
+    if(retour_etat){
+      h = ceil((float) (k*(c - x)));
+    }
 
   }
+
   void display() {
     
     chal.resize(100,0);
@@ -136,30 +203,34 @@ class Boat {
     textFont(params,16);
     fill(0);  
     text("v="+(int)v+" m/s x="+(int)x,width/2,30);
+    
+    if(retour_etat){
+      indication.resize(20,0);
+      image(indication,c,height-270);
+    }  
     //Points de contact
     //ellipse((int)x+11,250,15,15);
     //ellipse((int)x+7,277,15,15);
     //ellipse((int)x+13,265,20,20);
     //ellipse((int)x+25,257,15,15);
-<<<<<<< HEAD
-=======
-    
-    
->>>>>>> 091cac292ee0e008f53051a9f1493c3ca5d52b4c
   }
   
   void machinesAvant()
   {
+    if(!retour_etat){
      if (h < hmax)
      {
        h++;
      }
      //Modifier le facteur si on modifie le hmax
      ar = map(-h, 0, hmax*3, 0, TWO_PI) - HALF_PI;
+    }
+    else c+=2;
      
   }
   void machinesArrieres()
   {
+    if(!retour_etat){ 
      if(h> hmin)
      {
      h--;
@@ -167,6 +238,8 @@ class Boat {
      ar = map(-h, 0, hmax*3, 0, TWO_PI) - HALF_PI;
      
      }
+    }
+    else c-=2;
   }
   
 
@@ -189,6 +262,7 @@ class Boat {
 }
 
 class Fish{  
+  boolean isoscille=false; 
   PImage fish=loadImage("fish.png");
   float m = 0.0;
   float t = 0.0;
@@ -200,8 +274,16 @@ class Fish{
     m += 0.01;
     t +=0.003;
     if(!in_the_net){
-      x = (int)(400+250*sin(t));
-      y = (int)(280+40*sin(m)); 
+      if(isoscille)
+      {
+        x = (int)(400+250*sin(t));
+        y = (int)(280+40*sin(m));
+      }
+      else
+      {
+        x = 700;
+        y = 250;
+      }
     }
     else{
        x = ((int)b.x+10);

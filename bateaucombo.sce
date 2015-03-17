@@ -8,12 +8,12 @@ B = [0;(puiss/m)]
 C = zeros(2,2)
 D= zeros(2,1)
 Te=1/25
-h =10
+h =1500
 
 s1 = syslin('c',A,B,C,D)
 s1d = dscr(s1,1/25)
 
-xh =[0;200]
+xh =[700;0]
 x0 =[0;0]
 
 ad = s1d('a')

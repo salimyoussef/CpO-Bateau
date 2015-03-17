@@ -29,7 +29,7 @@ void draw() {
   image(pause_button,30,height-30);
   
   //Bouton retour d'état
-  PImage closed_loop_button = loadImage("manuel.png");
+  PImage closed_loop_button = loadImage("manuel.png"); //A modifier !
   closed_loop_button.resize(30,30);
   image(closed_loop_button,60,height-30);
   
@@ -105,29 +105,63 @@ void mousePressed() {
 
 class Boat { 
   double x=0,v=0,Te=0.04,fuel=100; 
-  int h=0, hmax = 3 , hmin = -3;
+  float h=0, hmax = 3 , hmin = -3;
   float ar=map(h, 0, hmax, 0, TWO_PI*(3/4)) - HALF_PI;
   float es;
   float k = 0.05;
   float c = 150;
   boolean retour_etat = false;
-  
+  String line;
+
+  BufferedReader reader=createReader("com.txt"); 
+
+  int i = 0;
   PImage chal=loadImage("chalutier.png");
   PImage tele=loadImage("telegraph.png");
   PImage ess=loadImage("essence.png");
   PImage indication=loadImage("ici.png");
-  PFont params = createFont("Arial",16,true);
-  double frott = 0;
+  PFont params = createFont("Arial",16,true); 
+  String[] splitted;
+  
+  Boat(){
+    try
+    {
+      line = reader.readLine();
+    }
+    catch(IOException e)
+    {
+      print("non");
+    }
+    splitted = split(line,',');
+  }
   
   void move() {
     
     if(fuel > 0)
     {
-      v= v*0.981736+0.073*h;
-      x+= 0.039*v+0.0014*h;    
+      v= v* 0.9966983+0.0243224*h;
+      x+= 0.0399339*v+0.0004867*h;    
 
       fuel -= abs(h)*Te*0.1;
-      es = map((int)fuel, 0.0, 100.0, -HALF_PI/3, HALF_PI/3) - HALF_PI-0.15 ; 
+      es = map((int)fuel, 0.0, 100.0, -HALF_PI/3, HALF_PI/3) - HALF_PI-0.15 ;   
+    
+    }
+    boolean boucleouverte = false;
+    if(boucleouverte)
+    {
+      
+      if(i < splitted.length)
+      {
+        h=Float.parseFloat(splitted[i]);
+        println(h);
+        i++;
+      }
+      else
+      {
+        h=0;
+      }
+      ar = map(-h, 0, hmax*3, 0, TWO_PI) - HALF_PI;
+      
     }
     
     if(retour_etat){
@@ -135,7 +169,7 @@ class Boat {
     }
 
   }
-  
+
   void display() {
     
     chal.resize(100,0);
@@ -219,6 +253,7 @@ class Boat {
 }
 
 class Fish{  
+  boolean isoscille=false; 
   PImage fish=loadImage("fish.png");
   float m = 0.0;
   float t = 0.0;
@@ -230,8 +265,16 @@ class Fish{
     m += 0.01;
     t +=0.003;
     if(!in_the_net){
-      x = (int)(400+250*sin(t));
-      y = (int)(280+40*sin(m)); 
+      if(isoscille)
+      {
+        x = (int)(400+250*sin(t));
+        y = (int)(280+40*sin(m));
+      }
+      else
+      {
+        x = 700;
+        y = 250;
+      }
     }
     else{
        x = ((int)b.x+10);
