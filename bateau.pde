@@ -27,6 +27,12 @@ void draw() {
   PImage pause_button = loadImage("pause_button.jpeg");
   pause_button.resize(30,30);
   image(pause_button,30,height-30);
+  
+  //Bouton retour d'état
+  PImage closed_loop_button = loadImage("manuel.png");
+  closed_loop_button.resize(30,30);
+  image(closed_loop_button,60,height-30);
+  
   b.move();
   b.display();
   if(still_not_finished) theEndOrNotTheEnd();
@@ -84,11 +90,15 @@ boolean overRect(int x, int y, int width, int height)  {
 }
 
 void mousePressed() {
-  if (overRect(0, height-30, width, 30)) {
+  if (overRect(0, height-30, 30, 30)) {
     setup();
   }
-  else if(overRect(0, height-(30*2), width, 30*2)){
+  else if(overRect(30, height-30, 30, 30)){
     //while(pause==true);
+  }
+  else if(overRect(60, height-30, 30, 30)){
+    setup();
+    b.retour_etat = true;
   }
 }
 
@@ -98,10 +108,14 @@ class Boat {
   int h=0, hmax = 3 , hmin = -3;
   float ar=map(h, 0, hmax, 0, TWO_PI*(3/4)) - HALF_PI;
   float es;
+  float k = 0.05;
+  float c = 150;
+  boolean retour_etat = false;
   
   PImage chal=loadImage("chalutier.png");
   PImage tele=loadImage("telegraph.png");
   PImage ess=loadImage("essence.png");
+  PImage indication=loadImage("ici.png");
   PFont params = createFont("Arial",16,true);
   double frott = 0;
   
@@ -115,8 +129,13 @@ class Boat {
       fuel -= abs(h)*Te*0.1;
       es = map((int)fuel, 0.0, 100.0, -HALF_PI/3, HALF_PI/3) - HALF_PI-0.15 ; 
     }
+    
+    if(retour_etat){
+      h = ceil((float) (k*(c - x)));
+    }
 
   }
+  
   void display() {
     
     chal.resize(100,0);
@@ -141,6 +160,11 @@ class Boat {
     textFont(params,16);
     fill(0);  
     text("v="+(int)v+" m/s x="+(int)x,width/2,30);
+    
+    if(retour_etat){
+      indication.resize(20,0);
+      image(indication,c,height-270);
+    }  
     //Points de contact
     //ellipse((int)x+11,250,15,15);
     //ellipse((int)x+7,277,15,15);
@@ -150,16 +174,20 @@ class Boat {
   
   void machinesAvant()
   {
+    if(!retour_etat){
      if (h < hmax)
      {
        h++;
      }
      //Modifier le facteur si on modifie le hmax
      ar = map(-h, 0, hmax*3, 0, TWO_PI) - HALF_PI;
+    }
+    else c+=2;
      
   }
   void machinesArrieres()
   {
+    if(!retour_etat){ 
      if(h> hmin)
      {
      h--;
@@ -167,6 +195,8 @@ class Boat {
      ar = map(-h, 0, hmax*3, 0, TWO_PI) - HALF_PI;
      
      }
+    }
+    else c-=2;
   }
   
 
