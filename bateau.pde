@@ -113,10 +113,30 @@ class Boat {
       x+= 0.0399339*v+0.0004867*h;    
 
       fuel -= abs(h)*Te*0.1;
-      es = map((int)fuel, 0.0, 100.0, -HALF_PI/3, HALF_PI/3) - HALF_PI-0.15 ; 
+      es = map((int)fuel, 0.0, 100.0, -HALF_PI/3, HALF_PI/3) - HALF_PI-0.15 ;   
+    
+    }
+    
+    if(true)
+    {
+      
+      if(i < splitted.length)
+      {
+        h=Float.parseFloat(splitted[i]);
+        println(h);
+        i++;
+      }
+      else
+      {
+        h=0;
+      }
+      ar = map(-h, 0, hmax*3, 0, TWO_PI) - HALF_PI;
+      
     }
 
   }
+  
+  
   void display() {
     
     chal.resize(100,0);
@@ -189,6 +209,7 @@ class Boat {
 }
 
 class Fish{  
+  boolean isoscille=false; 
   PImage fish=loadImage("fish.png");
   float m = 0.0;
   float t = 0.0;
@@ -200,8 +221,16 @@ class Fish{
     m += 0.01;
     t +=0.003;
     if(!in_the_net){
-      x = (int)(400+250*sin(t));
-      y = (int)(280+40*sin(m)); 
+      if(isoscille)
+      {
+        x = (int)(400+250*sin(t));
+        y = (int)(280+40*sin(m));
+      }
+      else
+      {
+        x = 700;
+        y = 250;
+      }
     }
     else{
        x = ((int)b.x+10);
