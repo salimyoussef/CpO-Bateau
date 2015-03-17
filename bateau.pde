@@ -84,8 +84,8 @@ class Boat {
     
     if(fuel > 0)
     {
-      v= v*0.981736+0.073*h;
-      x+= 0.039*v+0.0014*h;    
+      v= v* 0.9966983+0.0243224*h;
+      x+= 0.0399339*v+0.0004867*h;    
 
       fuel -= abs(h)*Te*0.1;
       es = map((int)fuel, 0.0, 100.0, -HALF_PI/3, HALF_PI/3) - HALF_PI-0.15 ;   
