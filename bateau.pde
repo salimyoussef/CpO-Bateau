@@ -28,10 +28,20 @@ void draw() {
   pause_button.resize(30,30);
   image(pause_button,30,height-30);
   
-  //Bouton retour d'état
-  PImage closed_loop_button = loadImage("manuel.png"); //A modifier !
+  //Bouton manuel
+  PImage manual_button = loadImage("manuel.png"); //A modifier !
+  manual_button.resize(30,30);
+  image(manual_button,60,height-30);
+  
+  //Bouton boucle ouverte
+  PImage closed_loop_button = loadImage("button_cre.png");
   closed_loop_button.resize(30,30);
-  image(closed_loop_button,60,height-30);
+  image(closed_loop_button,90,height-30);
+  
+  //Bouton boucle ouverte
+  PImage open_loop_button = loadImage("button_cbo.png");
+  open_loop_button.resize(30,30);
+  image(open_loop_button,120,height-30);
   
   b.move();
   b.display();
@@ -94,11 +104,23 @@ void mousePressed() {
     setup();
   }
   else if(overRect(30, height-30, 30, 30)){
-    //while(pause==true);
+    //while(pause==true); //que fait le bouton pause ?
   }
   else if(overRect(60, height-30, 30, 30)){
     setup();
+    b.boucleouverte = false;
+    b.retour_etat = false;
+  }
+  else if(overRect(90, height-30, 30, 30)){
+    setup();
+    b.boucleouverte = false;
     b.retour_etat = true;
+  }
+  else if(overRect(120, height-30, 30, 30)){
+    setup();
+    b.retour_etat = false;
+    b.boucleouverte = true;
+    f.isoscille = false;
   }
 }
 
@@ -111,6 +133,7 @@ class Boat {
   float k = 0.05;
   float c = 150;
   boolean retour_etat = false;
+  boolean boucleouverte = false;
   String line;
 
   BufferedReader reader=createReader("com.txt"); 
@@ -146,7 +169,7 @@ class Boat {
       es = map((int)fuel, 0.0, 100.0, -HALF_PI/3, HALF_PI/3) - HALF_PI-0.15 ;   
     
     }
-    boolean boucleouverte = false;
+    
     if(boucleouverte)
     {
       
@@ -161,12 +184,12 @@ class Boat {
         h=0;
       }
       ar = map(-h, 0, hmax*3, 0, TWO_PI) - HALF_PI;
-      
     }
-    
-    if(retour_etat){
+    else if(retour_etat){
       h = ceil((float) (k*(c - x)));
     }
+    
+    
 
   }
 
@@ -208,7 +231,7 @@ class Boat {
   
   void machinesAvant()
   {
-    if(!retour_etat){
+    if(!retour_etat && !boucleouverte){
      if (h < hmax)
      {
        h++;
@@ -216,21 +239,21 @@ class Boat {
      //Modifier le facteur si on modifie le hmax
      ar = map(-h, 0, hmax*3, 0, TWO_PI) - HALF_PI;
     }
-    else c+=2;
+    else if(retour_etat) c+=2;
      
   }
   void machinesArrieres()
   {
-    if(!retour_etat){ 
+    if(!retour_etat && !boucleouverte){ 
      if(h> hmin)
      {
-     h--;
+     h++;
      //Modifier le facteur si on modifie le hmax
      ar = map(-h, 0, hmax*3, 0, TWO_PI) - HALF_PI;
      
      }
     }
-    else c-=2;
+    else if(retour_etat) c-=2;
   }
   
 
@@ -253,7 +276,7 @@ class Boat {
 }
 
 class Fish{  
-  boolean isoscille=false; 
+  boolean isoscille=true; 
   PImage fish=loadImage("fish.png");
   float m = 0.0;
   float t = 0.0;
