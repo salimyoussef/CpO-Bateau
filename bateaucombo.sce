@@ -1,7 +1,7 @@
 //Commande en boucle ouverte du bateau
-f=500
+f=2000
 m=24190
-puiss = 44200
+puiss = 44200/3
 
 A = [0,1;0,-f/m]
 B = [0;(puiss/m)]
@@ -13,7 +13,7 @@ h =1500
 s1 = syslin('c',A,B,C,D)
 s1d = dscr(s1,1/25)
 
-xh =[700;0]
+xh =[675;0]
 x0 =[0;0]
 
 ad = s1d('a')
