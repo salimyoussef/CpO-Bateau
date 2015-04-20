@@ -23,25 +23,20 @@ void draw() {
   reset_button.resize(30,30);
   image(reset_button,0,height-30);
   
-  //Bouton pause
-  PImage pause_button = loadImage("pause_button.jpeg");
-  pause_button.resize(30,30);
-  image(pause_button,30,height-30);
-  
-  //Bouton manuel
-  PImage manual_button = loadImage("manuel.png"); //A modifier !
-  manual_button.resize(30,30);
-  image(manual_button,60,height-30);
-  
-  //Bouton boucle ouverte
-  PImage closed_loop_button = loadImage("button_cre.png");
-  closed_loop_button.resize(30,30);
-  image(closed_loop_button,90,height-30);
-  
   //Bouton boucle ouverte
   PImage open_loop_button = loadImage("button_cbo.png");
   open_loop_button.resize(30,30);
-  image(open_loop_button,120,height-30);
+  image(open_loop_button,30,height-30);
+  
+  //Bouton boucle fermee ou retour par etat
+  PImage closed_loop_button = loadImage("button_cre.png");
+  closed_loop_button.resize(30,30);
+  image(closed_loop_button,60,height-30);
+  
+  //Bouton commande manuelle
+  PImage manual_button = loadImage("manuel.png"); //A modifier !
+  manual_button.resize(30,30);
+  image(manual_button,90,height-30);
   
   b.move();
   b.display();
@@ -104,23 +99,20 @@ void mousePressed() {
     setup();
   }
   else if(overRect(30, height-30, 30, 30)){
-    //while(pause==true); //que fait le bouton pause ?
-  }
-  else if(overRect(60, height-30, 30, 30)){
-    setup();
-    b.boucleouverte = false;
-    b.retour_etat = false;
-  }
-  else if(overRect(90, height-30, 30, 30)){
-    setup();
-    b.boucleouverte = false;
-    b.retour_etat = true;
-  }
-  else if(overRect(120, height-30, 30, 30)){
     setup();
     b.retour_etat = false;
     b.boucleouverte = true;
     f.isoscille = false;
+  }
+  else if(overRect(60, height-30, 30, 30)){
+    setup();
+    b.boucleouverte = false;
+    b.retour_etat = true;
+  }
+  else if(overRect(90, height-30, 30, 30)){
+    setup();
+    b.boucleouverte = false;
+    b.retour_etat = false;
   }
 }
 
@@ -222,11 +214,7 @@ class Boat {
       indication.resize(20,0);
       image(indication,c,height-270);
     }  
-    //Points de contact
-    //ellipse((int)x+11,250,15,15);
-    //ellipse((int)x+7,277,15,15);
-    //ellipse((int)x+13,265,20,20);
-    //ellipse((int)x+25,257,15,15);
+
   }
   
   void machinesAvant()
@@ -247,7 +235,7 @@ class Boat {
     if(!retour_etat && !boucleouverte){ 
      if(h> hmin)
      {
-     h++;
+     h--;
      //Modifier le facteur si on modifie le hmax
      ar = map(-h, 0, hmax*3, 0, TWO_PI) - HALF_PI;
      

@@ -1,7 +1,7 @@
 //Commande en boucle ouverte du bateau
-f=2000
+f=500
 m=24190
-puiss = 44200/3
+puiss = 44200
 
 A = [0,1;0,-f/m]
 B = [0;(puiss/m)]
