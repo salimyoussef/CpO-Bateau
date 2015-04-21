@@ -13,7 +13,7 @@ h =1500
 s1 = syslin('c',A,B,C,D)
 s1d = dscr(s1,1/25)
 
-xh =[675;0]
+xh =[678;0]
 x0 =[0;0]
 
 ad = s1d('a')
@@ -34,7 +34,7 @@ u = Gt*inv(G*Gt)*y
 max(abs(u))
 
 fileid='com.txt'
-fp=mopen('C:\Users\user\Documents\Bateau\'+fileid,'w');
+fp=mopen('/home/sy306571/CpO/bateau/'+fileid,'w');
 Kt=u';
 Ks=string(u(1));
 for k=2:length(u),
