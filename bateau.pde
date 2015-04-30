@@ -180,9 +180,7 @@ class Boat {
     else if(retour_etat){
       h = ceil((float) (k*(c - x)));
     }
-    
-    
-
+   
   }
 
   void display() {
