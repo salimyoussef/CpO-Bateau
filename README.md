@@ -4,7 +4,7 @@ Un projet réalisé par :
 - Julien LE VAN SUU
 - Youssef SALIM
 
-> Description du projet
+## Description du projet
 
 Commandez un chalutier et pêchez le petit poisson rouge. La précision de la capture est prise en compte.
 
